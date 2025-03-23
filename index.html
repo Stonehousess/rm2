@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Movie Suggester</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100vw;
+            max-width: 800px;
+            position: relative;
+        }
+
+        .movie-poster {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .movie-poster:hover {
+            transform: scale(1.02);
+        }
+
+        .info-container {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .movie-title {
+            font-size: 24px;
+            color: #fff;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ffaa00;
+        }
+
+        .tmdb-logo {
+            width: 60px;
+            height: auto;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" />
+        <div class="info-container">
+            <div id="movie-title" class="movie-title">Loading...</div>
+            <button id="save-poster">Save Picture</button>
+            <button id="find-trailer" style="display: none;">Find Trailer</button>
+            <a id="tmdb-link" href="#" target="_blank" style="display: none;">
+                <img class="tmdb-logo" src="https://www.themoviedb.org/assets/2/v4/logos/208x226-stacked-e31a1859d8506a1e0586cc4684d1a1be1c0c5f8e11ddf101f3c906e82b5c024d.png" alt="TMDb">
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'YOUR_TMDB_API_KEY';
+
+        async function getRandomAnimeMovie() {
+            const endpoint = Math.random() > 0.5 ? 'movie' : 'tv';
+            const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=16`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.results.length > 0) {
+                    const randomMovie = data.results[Math.floor(Math.random() * data.results.length)];
+                    const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
+
+                    // Set movie poster
+                    document.getElementById('movie-poster').src = posterUrl;
+
+                    // Set movie title + rating
+                    document.getElementById('movie-title').textContent = 
+                        `${randomMovie.title || randomMovie.name} 
+                        (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
+                        - ⭐ ${randomMovie.vote_average.toFixed(1)}`;
+
+                    // Set up TMDb link
+                    const tmdbLink = document.getElementById('tmdb-link');
+                    tmdbLink.href = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
+                    tmdbLink.style.display = 'inline';
+
+                    // Save Picture Button
+                    document.getElementById('save-poster').onclick = () => {
+                        fetch(posterUrl)
+                            .then(response => response.blob())
+                            .then(blob => {
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.download = 'movie-poster.jpg';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                URL.revokeObjectURL(url);
+                            });
+                    };
+
+                    // Find Trailer Button
+                    const trailerButton = document.getElementById('find-trailer');
+                    const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
+
+                    const videoResponse = await fetch(videoUrl);
+                    const videoData = await videoResponse.json();
+
+                    const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                    if (trailer) {
+                        trailerButton.style.display = 'inline';
+                        trailerButton.onclick = () => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
+                    } else {
+                        trailerButton.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching movie:', error);
+                document.getElementById('movie-title').textContent = 'Failed to load movie.';
+            }
+        }
+
+        // Load movie on page load + refresh every 60 seconds
+        window.onload = getRandomAnimeMovie;
+        setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
+    </script>
+</body>
+</html>
