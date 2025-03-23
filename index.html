@@ -13,9 +13,9 @@
             background-color: #000;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            align-items: flex-start;
+            min-height: 100vh; /* Allow scrolling */
+            overflow-x: hidden;
         }
 
         .container {
@@ -23,11 +23,12 @@
             width: 100vw;
             max-width: 800px;
             position: relative;
+            padding-bottom: 20px;
         }
 
         .movie-poster {
             width: auto;
-            height: 100vh; /* Fill screen height */
+            height: 100vh; /* Fit full screen height */
             object-fit: cover;
             cursor: pointer;
             border-radius: 8px;
@@ -45,6 +46,7 @@
             justify-content: center;
             gap: 10px;
             padding: 0 10px;
+            flex-wrap: wrap;
         }
 
         .movie-title {
@@ -73,16 +75,26 @@
             width: 60px;
             height: auto;
             cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .tmdb-logo:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Movie Poster -->
         <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" />
         <div class="info-container">
+            <!-- Movie Title + Rating -->
             <div id="movie-title" class="movie-title">Loading...</div>
+            <!-- Save Picture Button -->
             <button id="save-poster">Save Picture</button>
+            <!-- Find Trailer Button -->
             <button id="find-trailer" style="display: none;">Find Trailer</button>
+            <!-- TMDb Logo Button -->
             <a id="tmdb-link" href="#" target="_blank" style="display: none;">
                 <img class="tmdb-logo" src="https://www.themoviedb.org/assets/2/v4/logos/208x226-stacked-e31a1859d8506a1e0586cc4684d1a1be1c0c5f8e11ddf101f3c906e82b5c024d.png" alt="TMDb">
             </a>
