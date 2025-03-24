@@ -50,12 +50,12 @@
     }
 
         .movie-title {
-        font-size: 20px;
+        font-size: 24px; /* Increased by two levels */
         color: #fff;
         flex-grow: 1;
         text-align: center;
-        line-height: 1; /* Fix line height */
-        vertical-align: middle; /* Align with buttons and flag */
+        line-height: 1;
+        vertical-align: middle;
     }
 
         button {
@@ -163,7 +163,7 @@ async function getRandomAnimeMovie() {
 
             console.log('Fetched details:', details);
 
-            const runtime = details.runtime || details.episode_run_time?.[0] || 'N/A';
+            
             const countries = details.production_countries || [];
             const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
 
@@ -171,7 +171,11 @@ async function getRandomAnimeMovie() {
             document.getElementById('movie-poster').src = posterUrl;
 
             // Set movie title + rating + type
-            document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name}  (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'})  - ⭐ - ⭐ ${randomMovie.vote_average.toFixed(1)}<br> ${isMovie ? '🎬' : '📺'}`;
+            document.getElementById('movie-title').innerHTML = 
+                `${randomMovie.title || randomMovie.name} 
+                (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
+                - ⭐ ${randomMovie.vote_average.toFixed(1)}<br>
+                ⏳ ${runtime} mins`;
 
             // Country flag if available
             if (countryCode) {
