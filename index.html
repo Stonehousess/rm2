@@ -107,6 +107,7 @@
 
 
 
+
 <script>
 const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
 
@@ -116,7 +117,7 @@ async function getRandomAnimeMovie() {
     const endpoint = Math.random() > 0.5 ? 'movie' : 'tv';
 
     // Get total pages to properly randomize
-    const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=16&sort_by=popularity.desc`;
+    const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=16,12&sort_by=popularity.desc`;
     const initialResponse = await fetch(initialUrl);
     const initialData = await initialResponse.json();
 
@@ -124,7 +125,7 @@ async function getRandomAnimeMovie() {
     const totalPages = Math.min(initialData.total_pages, 500);
     const randomPage = Math.floor(Math.random() * totalPages) + 1;
 
-    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=16&page=${randomPage}`;
+    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=16,12&page=${randomPage}`;
 
     try {
         const response = await fetch(url);
@@ -204,6 +205,7 @@ async function getRandomAnimeMovie() {
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
 </script>
+
 
 
 
