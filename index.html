@@ -102,6 +102,7 @@
     </div>
 
     
+
 <script>
 const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
 
@@ -191,6 +192,7 @@ function openTrailerPopup(videoId) {
     const trailerPopup = document.getElementById('trailer-popup');
     const trailerFrame = document.getElementById('trailer-frame');
     
+    // Autoplay and disable related videos
     trailerFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
     trailerPopup.style.display = 'flex';
 }
@@ -207,6 +209,7 @@ function closeTrailerPopup() {
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
 </script>
+
 
 </body>
 </html>
