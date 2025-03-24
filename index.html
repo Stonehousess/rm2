@@ -51,26 +51,29 @@
         }
 
         .movie-title {
-            font-size: 24px;
-            color: #fff;
-            flex-grow: 1;
-            text-align: center;
-        }
+        font-size: 20px; /* Reduced by two levels */
+        color: #fff;
+        flex-grow: 1;
+        text-align: center;
+    }
 
         button {
-            padding: 10px 20px;
-            background-color: #ffcc00;
-            color: #000;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
+        padding: 10px 10px; /* Reduce button width */
+        background-color: #ffcc00;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, color 0.3s;
+        width: 45%; /* Halve button width */
+        max-width: 150px;
+    }
 
         button:hover {
-            background-color: #ffaa00;
-        }
+        background-color: #000;
+        color: #ffd700; /* Gold text */
+    }
 
         .tmdb-logo {
             width: 60px;
@@ -91,14 +94,14 @@
         <div class="info-container">
             <!-- Movie Title + Rating -->
             <div id="movie-title" class="movie-title">Loading...</div> <img id="country-flag" src="" alt="Country Flag" style="display: none; width: 40px; height: 28px; margin-left: 5px;" />
-            <!-- Save Picture Button -->
-            <button id="save-poster">Save Picture</button>
-            <!-- Find Trailer Button -->
-            <button id="find-trailer" style="display: none;">Find Trailer</button>
+            <!-- Poster Button -->
+            <button id="save-poster">Poster</button>
+            <!-- Trailer Button -->
+            <button id="find-trailer" style="display: none;">Trailer</button>
             <!-- TMDb Logo Button -->
             
 <!-- TMDb Button -->
-<button id="tmdb-link" style="display: none;">View on TMDb</button>
+<img id="tmdb-link" class="tmdb-logo" src="gVZIvphd_400x400.jpg" alt="TMDb Logo" style="width: 60px; height: auto; cursor: pointer; display: none;" />
 
         </div>
     </div>
@@ -183,7 +186,7 @@ async function getRandomAnimeMovie() {
             tmdbButton.style.display = 'inline';
             tmdbButton.onclick = () => window.open(`https://www.themoviedb.org/${endpoint}/${randomMovie.id}`, '_blank');
 
-            // Save Picture Button
+            // Poster Button
             document.getElementById('save-poster').onclick = () => {
                 fetch(posterUrl)
                     .then(response => response.blob())
@@ -199,7 +202,7 @@ async function getRandomAnimeMovie() {
                     });
             };
 
-            // Find Trailer Button (open YouTube directly)
+            // Trailer Button (open YouTube directly)
             const trailerButton = document.getElementById('find-trailer');
             const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
             const videoResponse = await fetch(videoUrl);
