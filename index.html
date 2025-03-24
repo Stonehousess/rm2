@@ -95,18 +95,23 @@
             <!-- Find Trailer Button -->
             <button id="find-trailer" style="display: none;">Find Trailer</button>
             <!-- TMDb Logo Button -->
-            <a id="tmdb-link" href="#" target="_blank" style="display: none;">
-                <img class="tmdb-logo" src="https://www.themoviedb.org/assets/2/v4/logos/208x226-stacked-e31a1859d8506a1e0586cc4684d1a1be1c0c5f8e11ddf101f3c906e82b5c024d.png" alt="TMDb">
-            </a>
+            
+<!-- TMDb Button -->
+<button id="tmdb-link" style="display: none;">View on TMDb</button>
+
         </div>
     </div>
 
     
 
+
+
 <script>
 const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
 
 async function getRandomAnimeMovie() {
+    console.log('Fetching movie...');
+
     const endpoint = Math.random() > 0.5 ? 'movie' : 'tv';
 
     // Get total pages to properly randomize
@@ -124,11 +129,15 @@ async function getRandomAnimeMovie() {
         const response = await fetch(url);
         const data = await response.json();
 
-        const validResults = data.results.filter(movie => movie.poster_path); // Filter out missing posters
+        console.log('Fetched data:', data);
+
+        const validResults = data.results.filter(movie => movie.poster_path);
 
         if (validResults.length > 0) {
             const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
             const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
+
+            console.log('Random movie:', randomMovie);
 
             // Set movie poster
             document.getElementById('movie-poster').src = posterUrl;
@@ -139,7 +148,7 @@ async function getRandomAnimeMovie() {
                 (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
                 - ⭐ ${randomMovie.vote_average.toFixed(1)}`;
 
-            // TMDb Button Link
+            // TMDb Button Action
             const tmdbButton = document.getElementById('tmdb-link');
             tmdbButton.style.display = 'inline';
             tmdbButton.onclick = () => window.open(`https://www.themoviedb.org/${endpoint}/${randomMovie.id}`, '_blank');
@@ -166,6 +175,8 @@ async function getRandomAnimeMovie() {
             const videoResponse = await fetch(videoUrl);
             const videoData = await videoResponse.json();
 
+            console.log('Fetched trailer data:', videoData);
+
             const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
             if (trailer) {
                 trailerButton.style.display = 'inline';
@@ -179,7 +190,7 @@ async function getRandomAnimeMovie() {
                 getRandomAnimeMovie(); // Load new movie when poster clicked
             };
         } else {
-            // Try again if no valid results are found
+            console.log('No valid results - trying again...');
             getRandomAnimeMovie();
         }
     } catch (error) {
@@ -189,18 +200,27 @@ async function getRandomAnimeMovie() {
 }
 
 function openTrailerPopup(videoId) {
+    console.log('Opening trailer popup with videoId:', videoId);
+
     const trailerPopup = document.getElementById('trailer-popup');
     const trailerFrame = document.getElementById('trailer-frame');
-    
-    // Autoplay and disable related videos
+
+    if (!trailerPopup || !trailerFrame) {
+        console.error('Popup or frame missing from DOM');
+        return;
+    }
+
+    // Force display and autoplay
     trailerFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
     trailerPopup.style.display = 'flex';
 }
 
 function closeTrailerPopup() {
+    console.log('Closing trailer popup');
+
     const trailerPopup = document.getElementById('trailer-popup');
     const trailerFrame = document.getElementById('trailer-frame');
-    
+
     trailerFrame.src = '';
     trailerPopup.style.display = 'none';
 }
@@ -209,6 +229,8 @@ function closeTrailerPopup() {
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
 </script>
+
+
 
 
 </body>
