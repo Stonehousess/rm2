@@ -163,7 +163,7 @@ async function getRandomAnimeMovie() {
 
             console.log('Fetched details:', details);
 
-            const runtime = details.runtime || details.episode_run_time?.[0] || 'N/A';
+            
             const countries = details.production_countries || [];
             const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
 
