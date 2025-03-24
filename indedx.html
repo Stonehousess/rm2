@@ -171,7 +171,7 @@ async function getRandomAnimeMovie() {
             document.getElementById('movie-poster').src = posterUrl;
 
             // Set movie title + rating + type
-            document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name}  (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'})  - ⭐ ${randomMovie.vote_average.toFixed(1)}<br> `;
+            document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name}  (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'})  - ⭐ - ⭐ ${randomMovie.vote_average.toFixed(1)}<br> ${isMovie ? '🎬' : '📺'}`;
 
             // Country flag if available
             if (countryCode) {
