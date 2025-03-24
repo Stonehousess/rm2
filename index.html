@@ -41,14 +41,14 @@
         }
 
         .info-container {
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 0 10px;
-            flex-wrap: wrap;
-        }
+        margin-top: 10px;
+        display: grid !important; /* Switch to grid */
+        grid-template-columns: repeat(3, auto); /* Even spacing */
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 0 10px;
+    }
 
         .movie-title {
         font-size: 20px; /* Reduced by two levels */
@@ -98,13 +98,13 @@
             <!-- Movie Title + Rating -->
             <div id="movie-title" class="movie-title">Loading...</div> <img id="country-flag" src="" alt="Country Flag" style="display: none; width: 40px; height: 28px; margin-left: 5px;" />
             <!-- Poster Button -->
-            <button id="save-poster" style="width: 100px !important; flex-shrink: 0; display: block;">Poster</button>
+            <button id="save-poster" style="width: 100px !important; flex-shrink: 0; display: block;" style="width: 100px !important; min-width: 100px !important; max-width: 100px !important; flex-shrink: 0 !important; display: inline-block !important;">Poster</button>
             <!-- Trailer Button -->
-            <button id="find-trailer" style="display: none;" style="width: 100px !important; flex-shrink: 0; display: block;">Trailer</button>
+            <button id="find-trailer" style="display: none;" style="width: 100px !important; flex-shrink: 0; display: block;" style="width: 100px !important; min-width: 100px !important; max-width: 100px !important; flex-shrink: 0 !important; display: inline-block !important;">Trailer</button>
             <!-- TMDb Logo Button -->
             
 <!-- TMDb Button -->
-<button id="tmdb-link" style="display: none;" style="width: 100px !important; flex-shrink: 0; display: block;">TMDB</button>
+<button id="tmdb-link" style="display: none;" style="width: 100px !important; flex-shrink: 0; display: block;" style="width: 100px !important; min-width: 100px !important; max-width: 100px !important; flex-shrink: 0 !important; display: inline-block !important;">TMDB</button>
 
         </div>
     </div>
