@@ -58,7 +58,7 @@
     }
 
         button {
-        padding: 10px 10px; /* Reduce button width */
+        padding: 10px 10px;
         background-color: #ffcc00;
         color: #000;
         border: none;
@@ -66,8 +66,9 @@
         cursor: pointer;
         font-size: 16px;
         transition: background-color 0.3s, color 0.3s;
-        width: 45%; /* Halve button width */
+        width: 50%; /* Force 50% width */
         max-width: 150px;
+        text-align: center;
     }
 
         button:hover {
@@ -101,7 +102,7 @@
             <!-- TMDb Logo Button -->
             
 <!-- TMDb Button -->
-<img id="tmdb-link" class="tmdb-logo" src="gVZIvphd_400x400.jpg" alt="TMDb Logo" style="width: 60px; height: auto; cursor: pointer; display: none;" />
+<button id="tmdb-link" style="display: none;">TMDB</button>
 
         </div>
     </div>
