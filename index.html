@@ -89,7 +89,7 @@
         <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" />
         <div class="info-container">
             <!-- Movie Title + Rating -->
-            <div id="movie-title" class="movie-title">Loading...</div>
+            <div id="movie-title" class="movie-title">Loading...</div> <img id="country-flag" src="" alt="Country Flag" style="display: none; width: 40px; height: 28px; margin-left: 5px;" />
             <!-- Save Picture Button -->
             <button id="save-poster">Save Picture</button>
             <!-- Find Trailer Button -->
@@ -103,6 +103,7 @@
     </div>
 
     
+
 
 
 
@@ -141,14 +142,34 @@ async function getRandomAnimeMovie() {
 
             console.log('Random movie:', randomMovie);
 
+            // Fetch additional details (runtime, production countries)
+            const detailsUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}?api_key=${API_KEY}`;
+            const detailsResponse = await fetch(detailsUrl);
+            const details = await detailsResponse.json();
+
+            console.log('Fetched details:', details);
+
+            const runtime = details.runtime || details.episode_run_time?.[0] || 'N/A';
+            const countries = details.production_countries || [];
+            const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
+
             // Set movie poster
             document.getElementById('movie-poster').src = posterUrl;
 
             // Set movie title + rating
-            document.getElementById('movie-title').textContent = 
+            document.getElementById('movie-title').innerHTML = 
                 `${randomMovie.title || randomMovie.name} 
                 (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
-                - ⭐ ${randomMovie.vote_average.toFixed(1)}`;
+                - ⭐ ${randomMovie.vote_average.toFixed(1)}<br>
+                ${endpoint === 'movie' ? '🎬 Movie' : '📺 TV Show'} - ⏳ ${runtime} mins`;
+
+            // Country flag if available
+            if (countryCode) {
+                document.getElementById('country-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
+                document.getElementById('country-flag').style.display = 'inline';
+            } else {
+                document.getElementById('country-flag').style.display = 'none';
+            }
 
             // TMDb Button Action
             const tmdbButton = document.getElementById('tmdb-link');
@@ -205,6 +226,7 @@ async function getRandomAnimeMovie() {
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
 </script>
+
 
 
 
