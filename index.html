@@ -175,7 +175,7 @@ async function getRandomAnimeMovie() {
                 `${randomMovie.title || randomMovie.name} 
                 (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
                 - ⭐ ${randomMovie.vote_average.toFixed(1)}<br>
-                ${isMovie ? '🎬 Movie' : '📺 TV Show'} - ⏳ ${runtime} mins`;
+                ${isMovie ? '🎬⏳ ${runtime} mins`;
 
             // Country flag if available
             if (countryCode) {
