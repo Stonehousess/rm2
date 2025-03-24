@@ -94,94 +94,119 @@
             <button id="save-poster">Save Picture</button>
             <!-- Find Trailer Button -->
             <button id="find-trailer" style="display: none;">Find Trailer</button>
-            <!-- TMDb Button -->
-            <button id="tmdb-link" style="display: none;">View on TMDb</button>
+            <!-- TMDb Logo Button -->
+            <a id="tmdb-link" href="#" target="_blank" style="display: none;">
+                <img class="tmdb-logo" src="https://www.themoviedb.org/assets/2/v4/logos/208x226-stacked-e31a1859d8506a1e0586cc4684d1a1be1c0c5f8e11ddf101f3c906e82b5c024d.png" alt="TMDb">
+            </a>
         </div>
     </div>
 
-    <script>
-        const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
+    
+<script>
+const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
 
-        async function getRandomAnimeMovie() {
-            const endpoint = Math.random() > 0.5 ? 'movie' : 'tv';
+async function getRandomAnimeMovie() {
+    const endpoint = Math.random() > 0.5 ? 'movie' : 'tv';
 
-            // Get total pages to properly randomize
-            const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=16&sort_by=popularity.desc`;
-            const initialResponse = await fetch(initialUrl);
-            const initialData = await initialResponse.json();
+    // Get total pages to properly randomize
+    const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=16&sort_by=popularity.desc`;
+    const initialResponse = await fetch(initialUrl);
+    const initialData = await initialResponse.json();
 
-            // TMDb caps pagination at 500 pages even if totalPages > 500
-            const totalPages = Math.min(initialData.total_pages, 500);
-            const randomPage = Math.floor(Math.random() * totalPages) + 1;
+    // TMDb caps pagination at 500 pages even if totalPages > 500
+    const totalPages = Math.min(initialData.total_pages, 500);
+    const randomPage = Math.floor(Math.random() * totalPages) + 1;
 
-            const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=16&page=${randomPage}`;
+    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=16&page=${randomPage}`;
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-                if (data.results.length > 0) {
-                    const randomMovie = data.results[Math.floor(Math.random() * data.results.length)];
-                    const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
+        const validResults = data.results.filter(movie => movie.poster_path); // Filter out missing posters
 
-                    // Set movie poster
-                    document.getElementById('movie-poster').src = posterUrl;
+        if (validResults.length > 0) {
+            const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
+            const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
 
-                    // Set movie title + rating
-                    document.getElementById('movie-title').textContent = 
-                        `${randomMovie.title || randomMovie.name} 
-                        (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
-                        - ⭐ ${randomMovie.vote_average.toFixed(1)}`;
+            // Set movie poster
+            document.getElementById('movie-poster').src = posterUrl;
 
-                    // TMDb Button Link
-                    const tmdbButton = document.getElementById('tmdb-link');
-                    tmdbButton.style.display = 'inline';
-                    tmdbButton.onclick = () => window.open(`https://www.themoviedb.org/${endpoint}/${randomMovie.id}`, '_blank');
+            // Set movie title + rating
+            document.getElementById('movie-title').textContent = 
+                `${randomMovie.title || randomMovie.name} 
+                (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
+                - ⭐ ${randomMovie.vote_average.toFixed(1)}`;
 
-                    // Save Picture Button
-                    document.getElementById('save-poster').onclick = () => {
-                        fetch(posterUrl)
-                            .then(response => response.blob())
-                            .then(blob => {
-                                const url = URL.createObjectURL(blob);
-                                const link = document.createElement('a');
-                                link.href = url;
-                                link.download = 'movie-poster.jpg';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                                URL.revokeObjectURL(url);
-                            });
-                    };
+            // TMDb Button Link
+            const tmdbButton = document.getElementById('tmdb-link');
+            tmdbButton.style.display = 'inline';
+            tmdbButton.onclick = () => window.open(`https://www.themoviedb.org/${endpoint}/${randomMovie.id}`, '_blank');
 
-                    // Find Trailer Button
-                    const trailerButton = document.getElementById('find-trailer');
-                    const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
-                    const videoResponse = await fetch(videoUrl);
-                    const videoData = await videoResponse.json();
+            // Save Picture Button
+            document.getElementById('save-poster').onclick = () => {
+                fetch(posterUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'movie-poster.jpg';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    });
+            };
 
-                    const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-                    if (trailer) {
-                        trailerButton.style.display = 'inline';
-                        trailerButton.onclick = () => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
-                    } else {
-                        trailerButton.style.display = 'none';
-                    }
+            // Find Trailer Button
+            const trailerButton = document.getElementById('find-trailer');
+            const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
+            const videoResponse = await fetch(videoUrl);
+            const videoData = await videoResponse.json();
 
-                    // Make poster clickable to load new movie
-                    document.getElementById('movie-poster').onclick = () => {
-                        getRandomAnimeMovie(); // Load new movie when poster clicked
-                    };
-                }
-            } catch (error) {
-                console.error('Error fetching movie:', error);
-                document.getElementById('movie-title').textContent = 'Failed to load movie.';
+            const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+            if (trailer) {
+                trailerButton.style.display = 'inline';
+                trailerButton.onclick = () => openTrailerPopup(trailer.key);
+            } else {
+                trailerButton.style.display = 'none';
             }
-        }
 
-        // Load movie on page load + refresh every 60 seconds
-        document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
-        setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
-    </script>
+            // Make poster clickable to load new movie
+            document.getElementById('movie-poster').onclick = () => {
+                getRandomAnimeMovie(); // Load new movie when poster clicked
+            };
+        } else {
+            // Try again if no valid results are found
+            getRandomAnimeMovie();
+        }
+    } catch (error) {
+        console.error('Error fetching movie:', error);
+        document.getElementById('movie-title').textContent = 'Failed to load movie.';
+    }
+}
+
+function openTrailerPopup(videoId) {
+    const trailerPopup = document.getElementById('trailer-popup');
+    const trailerFrame = document.getElementById('trailer-frame');
+    
+    trailerFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
+    trailerPopup.style.display = 'flex';
+}
+
+function closeTrailerPopup() {
+    const trailerPopup = document.getElementById('trailer-popup');
+    const trailerFrame = document.getElementById('trailer-frame');
+    
+    trailerFrame.src = '';
+    trailerPopup.style.display = 'none';
+}
+
+// Load movie on page load + refresh every 60 seconds
+document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
+setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
+</script>
+
 </body>
 </html>
