@@ -109,16 +109,22 @@
 
 
 
+
 <script>
 const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
 
 async function getRandomAnimeMovie() {
     console.log('Fetching movie...');
 
-    const endpoint = Math.random() > 0.5 ? 'movie' : 'tv';
+    // 50/50 chance between movie and TV
+    const isMovie = Math.random() > 0.5;
+    const endpoint = isMovie ? 'movie' : 'tv';
+
+    // Adjust genre filter depending on type
+    const genreFilter = isMovie ? '16,12' : '16';
 
     // Get total pages to properly randomize
-    const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=16,12&sort_by=popularity.desc`;
+    const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=${genreFilter}&sort_by=popularity.desc`;
     const initialResponse = await fetch(initialUrl);
     const initialData = await initialResponse.json();
 
@@ -126,7 +132,7 @@ async function getRandomAnimeMovie() {
     const totalPages = Math.min(initialData.total_pages, 500);
     const randomPage = Math.floor(Math.random() * totalPages) + 1;
 
-    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=16,12&page=${randomPage}`;
+    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreFilter}&page=${randomPage}`;
 
     try {
         const response = await fetch(url);
@@ -156,12 +162,12 @@ async function getRandomAnimeMovie() {
             // Set movie poster
             document.getElementById('movie-poster').src = posterUrl;
 
-            // Set movie title + rating
+            // Set movie title + rating + type
             document.getElementById('movie-title').innerHTML = 
                 `${randomMovie.title || randomMovie.name} 
                 (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'}) 
                 - ⭐ ${randomMovie.vote_average.toFixed(1)}<br>
-                ${endpoint === 'movie' ? '🎬 Movie' : '📺 TV Show'} - ⏳ ${runtime} mins`;
+                ${isMovie ? '🎬 Movie' : '📺 TV Show'} - ⏳ ${runtime} mins`;
 
             // Country flag if available
             if (countryCode) {
@@ -226,6 +232,7 @@ async function getRandomAnimeMovie() {
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 setInterval(getRandomAnimeMovie, 60000); // Refresh every 60 seconds
 </script>
+
 
 
 
