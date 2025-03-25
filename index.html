@@ -69,17 +69,20 @@
             margin-bottom: 5px;
         }
 
-        /* ✅ Fix Button Visibility */
+        /* ✅ Flag Styling */
+        .movie-flag {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* ✅ Fix Button Layout */
         .button-container {
             display: flex;
             justify-content: center;
             margin-top: 20px;
             gap: 15px;
-            z-index: 9999; /* ✅ Highest Z-Index */
-            position: fixed; /* ✅ Ensure buttons stay on top */
-            top: 80%; /* ✅ Adjust positioning */
-            left: 50%; /* ✅ Center buttons horizontally */
-            transform: translate(-50%, -50%);
+            z-index: 2;
+            position: relative; /* ✅ Remove fixed positioning */
             pointer-events: auto;
         }
 
@@ -112,9 +115,10 @@
             <!-- ✅ Show Title, Year, Country, Rating Only -->
             <div id="movie-title" class="movie-title">Loading...</div>
             <div id="movie-rating" class="movie-rating"></div>
+            <div id="movie-flag" class="movie-flag"></div>
         </div>
 
-        <!-- ✅ Restore Original Buttons -->
+        <!-- ✅ Buttons Now After Rating + Flag -->
         <div class="button-container">
             <button class="action-button" onclick="savePoster()">
                 <img src="photo-icon.png" alt="Save Picture" />
@@ -172,8 +176,20 @@ async function getRandomAnimeMovie() {
             document.getElementById('movie-poster').src = posterUrl;
             document.getElementById('poster-url').content = posterUrl;
 
+            // ✅ Title, Year, Rating
             document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name} (${randomMovie.release_date?.split('-')[0] || 'N/A'})`;
-            document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)} • ${details.production_countries?.[0]?.iso_3166_1 || ''}`;
+            document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
+
+            // ✅ Country Flag
+            const countryCode = details.production_countries?.[0]?.iso_3166_1;
+            if (countryCode) {
+                const flag = countryCode
+                    .toUpperCase()
+                    .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
+                document.getElementById('movie-flag').innerText = flag;
+            } else {
+                document.getElementById('movie-flag').innerText = '';
+            }
         }
     } catch (error) {
         console.error('Error fetching movie:', error);
