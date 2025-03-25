@@ -260,11 +260,18 @@ document.getElementById('tmdb-button').onclick = () => {
 
 // Enable/Disable buttons based on available data
 function updateButtonStates() {
-    document.getElementById('trailer-button').disabled = !trailerUrl;
-    document.getElementById('tmdb-button').disabled = !tmdbUrl;
+    const trailerButton = document.getElementById('trailer-button');
+    const tmdbButton = document.getElementById('tmdb-button');
 
-    document.getElementById('trailer-button').style.opacity = trailerUrl ? '1' : '0.4';
-    document.getElementById('tmdb-button').style.opacity = tmdbUrl ? '1' : '0.4';
+    trailerButton.disabled = !trailerUrl;
+    tmdbButton.disabled = !tmdbUrl;
+
+    trailerButton.style.opacity = trailerUrl ? '1' : '0.4';
+    tmdbButton.style.opacity = tmdbUrl ? '1' : '0.4';
+
+    // Prevent pointer cursor on disabled buttons
+    trailerButton.style.cursor = trailerUrl ? 'pointer' : 'not-allowed';
+    tmdbButton.style.cursor = tmdbUrl ? 'pointer' : 'not-allowed';
 }
 
 // Ensure button state updates when data is loaded
