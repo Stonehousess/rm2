@@ -135,21 +135,12 @@
 <script>
 const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
 
-// Fisher-Yates Shuffle — Only for final shuffle step
+// Fisher-Yates Shuffle Algorithm
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
-}
-
-// Original Randomizer with Anime and Animation Filter (Restored)
-function getRandomMovie(movies) {
-    const animeAndAnimation = movies.filter(movie => 
-        movie.genre_ids.includes(16) || movie.genre_ids.includes(27) // 16 = Animation, 27 = Anime
-    );
-    shuffle(animeAndAnimation);
-    return animeAndAnimation[0];
 }
 
 async function getRandomMovie() {
