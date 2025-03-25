@@ -96,18 +96,19 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 20px;
+            gap: 15px;
             z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.1); /* ✅ Lower opacity */
+            background-color: rgba(0, 0, 0, 0.05); /* ✅ Reduced opacity */
             padding: 10px 20px;
             border-radius: 12px;
             backdrop-filter: blur(10px);
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* ✅ Softer shadow */
             pointer-events: auto;
+            height: 60px;
         }
 
         .action-button {
-            padding: 8px;
+            padding: 5px;
             background-color: transparent;
             border: none;
             cursor: pointer;
@@ -116,12 +117,14 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            width: 60px;
+            height: 60px; /* ✅ Buttons are twice as big */
         }
 
         .action-button img {
-            width: 25px; /* ✅ Reduced size */
-            height: 25px;
-            object-fit: contain; /* ✅ Maintain aspect ratio */
+            width: 30px; /* ✅ Reduced icon size for consistency */
+            height: 30px;
+            object-fit: contain;
             border-radius: 5px;
         }
 
@@ -189,8 +192,10 @@ async function getRandomAnimeMovie() {
 
             document.getElementById('movie-poster').src = posterUrl;
 
+            // ✅ Title and Rating (Include Year)
+            const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
-                `${randomMovie.title || randomMovie.name}`;
+                `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
