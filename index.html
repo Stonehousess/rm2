@@ -112,12 +112,12 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            width: 80px;
+            width: 80px; /* Buttons 2x size */
             height: 80px;
         }
 
         .action-button img {
-            width: 40px;
+            width: 40px; /* Adjusted icon size */
             height: 40px;
             object-fit: contain;
             border-radius: 5px;
@@ -225,7 +225,7 @@ function savePoster() {
     const posterUrl = document.getElementById('movie-poster').src;
     const link = document.createElement('a');
     link.href = posterUrl;
-    link.download = 'movie-poster.jpg';
+    link.download = 'movie-poster.jpg';  // Automatically download the image
     link.click();
 }
 
