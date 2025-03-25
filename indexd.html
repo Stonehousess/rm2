@@ -258,18 +258,6 @@ document.getElementById('tmdb-button').onclick = () => {
     if (tmdbUrl) window.open(tmdbUrl, '_blank');
 };
 
-// Enable/Disable buttons based on available data
-function updateButtonStates() {
-    document.getElementById('trailer-button').disabled = !trailerUrl;
-    document.getElementById('tmdb-button').disabled = !tmdbUrl;
-
-    document.getElementById('trailer-button').style.opacity = trailerUrl ? '1' : '0.4';
-    document.getElementById('tmdb-button').style.opacity = tmdbUrl ? '1' : '0.4';
-}
-
-// Ensure button state updates when data is loaded
-setTimeout(updateButtonStates, 500);
-
 // Run this when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     getRandomAnimeMovie();
