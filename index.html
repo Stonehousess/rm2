@@ -223,10 +223,18 @@ async function getRandomAnimeMovie() {
 
 function savePoster() {
     const posterUrl = document.getElementById('movie-poster').src;
-    const link = document.createElement('a');
-    link.href = posterUrl;
-    link.download = 'movie-poster.jpg'; // Automatically download the image
-    link.click();
+    fetch(posterUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'movie-poster.jpg'; // Automatically download the image
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
 }
 
 document.getElementById('trailer-button').onclick = () => {
