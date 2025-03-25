@@ -13,26 +13,38 @@
 <body>
 
   <!-- Title -->
-  <h1 id="movie-title">Movie Title</h1>
+  <h1 id="movie-title"></h1>
 
   <!-- Poster -->
   <img id="movie-poster" alt="Movie Poster" />
 
   <!-- Description -->
-  <p id="movie-description">Movie description goes here...</p>
+  <p id="movie-description"></p>
 
   <script>
-    // Example data for testing
-    const posterUrl = "https://example.com/poster.jpg";
-    const movieTitle = "The Matrix";
-    const movieDescription = "A hacker discovers the true nature of reality.";
+    // Example of dynamically loading movie data (restore original script)
+    async function loadMovieData() {
+      try {
+        const response = await fetch('https://example.com/api/movie');
+        const data = await response.json();
 
-    // Set movie data into the DOM
-    document.getElementById('movie-poster').src = posterUrl;
-    document.getElementById('poster-url').content = posterUrl; // NEW LINE
+        const posterUrl = data.posterUrl;
+        const movieTitle = data.title;
+        const movieDescription = data.description;
 
-    document.getElementById('movie-title').innerText = movieTitle;
-    document.getElementById('movie-description').innerText = movieDescription;
+        // Dynamically set movie data
+        document.getElementById('movie-poster').src = posterUrl;
+        document.getElementById('poster-url').content = posterUrl; // NEW LINE
+
+        document.getElementById('movie-title').innerText = movieTitle;
+        document.getElementById('movie-description').innerText = movieDescription;
+      } catch (error) {
+        console.error('Failed to load movie data:', error);
+      }
+    }
+
+    // Call the function to load data
+    loadMovieData();
   </script>
 
 </body>
