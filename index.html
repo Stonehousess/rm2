@@ -59,7 +59,7 @@
             margin-bottom: 5px;
         }
 
-        /* ✅ Wrap Rating and Flag in One Flexbox Container */
+        /* ✅ Align Rating and Flag */
         .rating-flag-container {
             display: flex;
             justify-content: center;
@@ -79,14 +79,20 @@
             margin: 0;
         }
 
-        /* ✅ Fix Button Visibility */
+        /* ✅ Floating Buttons at Bottom */
         .button-container {
+            position: fixed;
+            bottom: 20px; /* ✅ Sit at the bottom of the screen */
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: center;
-            margin-top: 15px;
-            gap: 15px;
-            z-index: 9999; /* ✅ Raise Above Poster */
-            position: relative; /* ✅ Ensure buttons stay above poster */
+            gap: 20px;
+            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px); /* ✅ Frosted glass effect */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             pointer-events: auto;
         }
 
@@ -96,13 +102,16 @@
             border: none;
             cursor: pointer;
             transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .action-button img {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             object-fit: contain;
-            border-radius: 5px;
+            border-radius: 8px;
         }
 
         .action-button:hover {
@@ -125,19 +134,19 @@
                 <div id="movie-flag" class="movie-flag"></div>
             </div>
         </div>
+    </div>
 
-        <!-- ✅ Restore Original Buttons -->
-        <div class="button-container">
-            <button class="action-button" onclick="savePoster()">
-                <img src="photo-icon.png" alt="Save Picture" />
-            </button>
-            <button class="action-button" id="trailer-button">
-                <img src="trailer-icon.png" alt="Watch Trailer" />
-            </button>
-            <button class="action-button" id="tmdb-button">
-                <img src="tmdb-icon.png" alt="Open TMDB" />
-            </button>
-        </div>
+    <!-- ✅ Floating Buttons -->
+    <div class="button-container">
+        <button class="action-button" onclick="savePoster()">
+            <img src="photo-icon.png" alt="Save Picture" />
+        </button>
+        <button class="action-button" id="trailer-button">
+            <img src="trailer-icon.png" alt="Watch Trailer" />
+        </button>
+        <button class="action-button" id="tmdb-button">
+            <img src="tmdb-icon.png" alt="Open TMDB" />
+        </button>
     </div>
 
 <script>
