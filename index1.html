@@ -92,18 +92,17 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 30px;
+            gap: 20px;
             z-index: 9999;
             background-color: rgba(0, 0, 0, 0.03); /* Transparent overlay */
-            padding: 15px 30px;
+            padding: 10px 20px;
             border-radius: 12px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: opacity(80%);
             pointer-events: auto;
         }
 
         .action-button {
-            padding: 20px;
+            padding: 10px;
             background-color: transparent;
             border: none;
             cursor: pointer;
@@ -117,9 +116,10 @@
         }
 
         .action-button img {
-            width: 60px; /* Adjusted icon size */
-            height: 60px;
+            width: 80px; /* Adjusted icon size */
+            height: 80px;
             object-fit: contain;
+            border-radius: 5px;
         }
 
         .action-button:disabled {
@@ -127,15 +127,20 @@
             cursor: not-allowed;
         }
 
+        #tmdb-button img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
         .action-button:hover {
             opacity: 0.8;
         }
-
     </style>
 </head>
 <body>
     <div class="container">
-        <img id="movie-poster" class="movie-poster" src="" alt="Film Poster" onclick="getRandomAnimeMovie()" />
+        <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" onclick="getRandomAnimeMovie()" />
         
         <div class="info-container">
             <div id="movie-title" class="movie-title">Loading...</div>
@@ -151,13 +156,13 @@
 
     <div class="button-container">
         <button class="action-button" onclick="savePoster()">
-            <img src="./assets/images/photo-icon.png" alt="Save">
+            <img src="./photo-icon.png" alt="Save">
         </button>
         <button class="action-button" id="trailer-button" disabled>
-            <img src="./assets/images/trailer-icon.png" alt="Trailer">
+            <img src="./trailer-icon.png" alt="Trailer">
         </button>
         <button class="action-button" id="tmdb-button">
-            <img src="./assets/images/tmdb-icon.png" alt="TMDB">
+            <img src="./tmdb-icon.png" alt="TMDB">
         </button>
     </div>
 
@@ -241,13 +246,7 @@ document.getElementById('tmdb-button').onclick = () => {
     if (tmdbUrl) window.open(tmdbUrl, '_blank');
 };
 
-// Run this when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    getRandomAnimeMovie();
-
-    // Set up the auto-refresh for the movie suggestion every 60 seconds
-    setInterval(getRandomAnimeMovie, 60000); // 60000ms = 60 seconds
-});
+document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 </script>
 </body>
 </html>
