@@ -131,6 +131,19 @@
         }
 
     </style>
+
+<style>
+    #trailer-button:disabled,
+    #tmdb-button:disabled {
+        cursor: not-allowed !important;
+    }
+
+    #trailer-button,
+    #tmdb-button {
+        transition: opacity 0.2s ease-in-out;
+    }
+</style>
+
 </head>
 <body>
     <div class="container">
@@ -250,6 +263,7 @@ function savePoster() {
         });
 }
 
+// Restore data assignment
 document.getElementById('trailer-button').onclick = () => {
     if (trailerUrl) window.open(trailerUrl, '_blank');
 };
@@ -268,10 +282,6 @@ function updateButtonStates() {
 
     trailerButton.style.opacity = trailerUrl ? '1' : '0.4';
     tmdbButton.style.opacity = tmdbUrl ? '1' : '0.4';
-
-    // Prevent pointer cursor on disabled buttons
-    trailerButton.style.cursor = trailerUrl ? 'pointer' : 'not-allowed';
-    tmdbButton.style.cursor = tmdbUrl ? 'pointer' : 'not-allowed';
 }
 
 // Ensure button state updates when data is loaded
