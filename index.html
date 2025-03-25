@@ -122,13 +122,12 @@
         }
 
         .action-button:disabled {
-            opacity: 0.2;
+            opacity: 0.4;
             cursor: not-allowed;
         }
          #tmdb-button img {
             width: 80px;
             height: 80px;
-            opacity: 0.8;
             object-fit: cover;
 
         .action-button:hover {
@@ -205,6 +204,10 @@ async function getRandomAnimeMovie() {
 
             // Set the description
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
+
+            // Display the flag for the country of origin (if available)
+            const country = randomMovie.origin_country ? randomMovie.origin_country[0] : null;
+            document.getElementById('movie-flag').innerHTML = country ? `🇺🇸` : '';
 
             // Fetch trailer URL
             const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
