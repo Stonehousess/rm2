@@ -64,7 +64,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px; /* ✅ Add space between flag and rating */
+            gap: 10px;
             margin-top: 5px;
         }
 
@@ -79,10 +79,20 @@
             margin: 0;
         }
 
+        /* ✅ Film Description Styling */
+        .movie-description {
+            color: #bbb;
+            font-size: 16px;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
         /* ✅ Floating Buttons at Bottom */
         .button-container {
             position: fixed;
-            bottom: 20px; /* ✅ Sit at the bottom of the screen */
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -91,27 +101,30 @@
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px 20px;
             border-radius: 12px;
-            backdrop-filter: blur(10px); /* ✅ Frosted glass effect */
+            backdrop-filter: blur(10px);
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             pointer-events: auto;
         }
 
         .action-button {
-            padding: 10px;
+            padding: 8px;
             background-color: transparent;
             border: none;
             cursor: pointer;
             transition: opacity 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 5px;
+            color: #FFD700; /* ✅ Gold Text */
+            font-size: 14px;
+            font-weight: bold;
         }
 
         .action-button img {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
-            border-radius: 8px;
+            border-radius: 5px;
         }
 
         .action-button:hover {
@@ -133,19 +146,25 @@
                 <div id="movie-rating" class="movie-rating"></div>
                 <div id="movie-flag" class="movie-flag"></div>
             </div>
+
+            <!-- ✅ Film Description -->
+            <div id="movie-description" class="movie-description"></div>
         </div>
     </div>
 
     <!-- ✅ Floating Buttons -->
     <div class="button-container">
         <button class="action-button" onclick="savePoster()">
-            <img src="photo-icon.png" alt="Save Picture" />
+            <img src="photo-icon.png" alt="Save">
+            Save
         </button>
         <button class="action-button" id="trailer-button">
-            <img src="trailer-icon.png" alt="Watch Trailer" />
+            <img src="trailer-icon.png" alt="Trailer">
+            Trailer
         </button>
         <button class="action-button" id="tmdb-button">
-            <img src="tmdb-icon.png" alt="Open TMDB" />
+            <img src="tmdb-icon.png" alt="TMDB">
+            TMDB
         </button>
     </div>
 
@@ -183,19 +202,16 @@ async function getRandomAnimeMovie() {
 
             tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
 
-            // ✅ Set movie poster + meta tag
             document.getElementById('movie-poster').src = posterUrl;
             document.getElementById('poster-url').content = posterUrl;
 
-            // ✅ Title and Rating (Suppress Empty Year)
             const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
 
-            // ✅ Rating
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
+            document.getElementById('movie-description').innerText = details.overview || 'No description available';
 
-            // ✅ Country Flag
             const countryCode = details.production_countries?.[0]?.iso_3166_1;
             document.getElementById('movie-flag').innerText = countryCode
                 ? countryCode.replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()))
