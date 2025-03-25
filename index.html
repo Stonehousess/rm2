@@ -41,7 +41,6 @@
             z-index: 0;
         }
 
-        /* ✅ Restore Zoom on Hover */
         .movie-poster:hover {
             transform: scale(1.05);
         }
@@ -59,7 +58,6 @@
             margin-bottom: 5px;
         }
 
-        /* ✅ Align Rating and Flag */
         .rating-flag-container {
             display: flex;
             justify-content: center;
@@ -79,7 +77,6 @@
             margin: 0;
         }
 
-        /* ✅ Film Description Styling */
         .movie-description {
             color: #bbb;
             font-size: 16px;
@@ -89,7 +86,7 @@
             line-height: 1.5;
         }
 
-        /* ✅ Floating Buttons at Bottom */
+        /* Floating Buttons at Bottom */
         .button-container {
             position: fixed;
             bottom: 20px;
@@ -98,11 +95,11 @@
             display: flex;
             gap: 20px;
             z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.03); /* ✅ Even more see-through */
+            background-color: rgba(0, 0, 0, 0.03); /* Transparent overlay */
             padding: 10px 20px;
             border-radius: 12px;
             backdrop-filter: blur(10px);
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* ✅ Softer shadow */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             pointer-events: auto;
         }
 
@@ -116,24 +113,24 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            width: 80px; /* ✅ Double the size */
+            width: 80px; /* Buttons 2x size */
             height: 80px;
         }
 
         .action-button img {
-            width: 40px; /* ✅ Icon size */
+            width: 40px;
             height: 40px;
             object-fit: contain;
             border-radius: 5px;
         }
 
-        /* ✅ Disable styling for non-working button */
+        /* Disable non-working button */
         .action-button:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
 
-        /* ✅ TMDB icon larger */
+        /* TMDB icon size */
         #tmdb-button img {
             width: 50px;
             height: 50px;
@@ -147,20 +144,25 @@
 </head>
 <body>
     <div class="container">
+        <!-- Clicking the Poster Will Trigger a New Movie -->
         <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" onclick="getRandomAnimeMovie()" />
         
         <div class="info-container">
+            <!-- Title and Rating -->
             <div id="movie-title" class="movie-title">Loading...</div>
 
+            <!-- Rating and Flag on Same Line -->
             <div class="rating-flag-container">
                 <div id="movie-rating" class="movie-rating"></div>
                 <div id="movie-flag" class="movie-flag"></div>
             </div>
 
+            <!-- Film Description -->
             <div id="movie-description" class="movie-description"></div>
         </div>
     </div>
 
+    <!-- Floating Buttons -->
     <div class="button-container">
         <button class="action-button" onclick="savePoster()">
             <img src="./assets/photo-icon.png" alt="Save">
@@ -199,6 +201,7 @@ async function getRandomAnimeMovie() {
 
             document.getElementById('movie-poster').src = posterUrl;
 
+            // Get Year from release_date
             const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
