@@ -114,10 +114,11 @@
             transition: opacity 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
             color: #FFD700; /* ✅ Gold Text */
             font-size: 14px;
             font-weight: bold;
+            z-index: 9999;
         }
 
         .action-button img {
@@ -155,16 +156,13 @@
     <!-- ✅ Floating Buttons -->
     <div class="button-container">
         <button class="action-button" onclick="savePoster()">
-            <img src="photo-icon.png" alt="Save">
-            Save
+            <img src="./photo-icon.png" aria-label="Save"> Save
         </button>
         <button class="action-button" id="trailer-button">
-            <img src="trailer-icon.png" alt="Trailer">
-            Trailer
+            <img src="./trailer-icon.png" aria-label="Trailer"> Trailer
         </button>
         <button class="action-button" id="tmdb-button">
-            <img src="tmdb-icon.png" alt="TMDB">
-            TMDB
+            <img src="./tmdb-icon.png" aria-label="TMDB"> TMDB
         </button>
     </div>
 
@@ -192,27 +190,17 @@ async function getRandomAnimeMovie() {
             const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
             const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
 
-            const detailsUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}?api_key=${API_KEY}`;
-            const detailsResponse = await fetch(detailsUrl);
-            const details = await detailsResponse.json();
-
-            trailerUrl = details.videos?.results?.find(v => v.type === 'Trailer')?.key
-                ? `https://www.youtube.com/watch?v=${details.videos.results.find(v => v.type === 'Trailer').key}`
-                : '';
-
-            tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
-
             document.getElementById('movie-poster').src = posterUrl;
-            document.getElementById('poster-url').content = posterUrl;
 
-            const year = randomMovie.release_date?.split('-')[0];
+            // ✅ Title and Rating
             document.getElementById('movie-title').innerHTML =
-                `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
+                `${randomMovie.title || randomMovie.name}`;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
-            document.getElementById('movie-description').innerText = details.overview || 'No description available';
+            document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
-            const countryCode = details.production_countries?.[0]?.iso_3166_1;
+            // ✅ Country Flag
+            const countryCode = randomMovie.origin_country?.[0];
             document.getElementById('movie-flag').innerText = countryCode
                 ? countryCode.replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()))
                 : '';
