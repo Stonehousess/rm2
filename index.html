@@ -38,11 +38,18 @@
             cursor: pointer;
             border-radius: 8px;
             transition: transform 0.3s ease;
+            z-index: 0;
         }
 
         /* ✅ Restore Zoom on Hover */
         .movie-poster:hover {
             transform: scale(1.05);
+        }
+
+        .info-container {
+            position: relative;
+            z-index: 1;
+            margin-top: 10px; /* ✅ Push Description Down Slightly */
         }
 
         .movie-title {
@@ -52,13 +59,32 @@
             text-align: center;
             line-height: 1;
             vertical-align: middle;
+            margin-bottom: 5px;
         }
 
+        .movie-rating {
+            font-size: 18px;
+            color: #ccc;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .movie-description {
+            color: #ccc;
+            font-size: 16px;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: 10px;
+        }
+
+        /* ✅ Restore Button Visibility + Layout */
         .button-container {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
-            gap: 10px;
+            margin-top: 20px;
+            gap: 15px;
+            z-index: 2;
+            position: relative;
         }
 
         .action-button {
@@ -88,8 +114,8 @@
         
         <div class="info-container">
             <div id="movie-title" class="movie-title">Loading...</div>
-            <div id="movie-rating" class="movie-title"></div>
-            <p id="movie-description"></p>
+            <div id="movie-rating" class="movie-rating"></div>
+            <p id="movie-description" class="movie-description"></p>
         </div>
 
         <!-- ✅ Restored Original Buttons -->
@@ -143,9 +169,9 @@ async function getRandomAnimeMovie() {
             // ✅ Set movie poster + meta tag
             document.getElementById('movie-poster').src = posterUrl;
             document.getElementById('poster-url').content = posterUrl;
+
             document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name} (${randomMovie.release_date?.split('-')[0] || 'N/A'})`;
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
-
             document.getElementById('movie-description').innerText = details.overview || 'No description available';
         }
     } catch (error) {
