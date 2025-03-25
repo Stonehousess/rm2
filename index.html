@@ -172,29 +172,37 @@ let tmdbUrl = '';
 async function getRandomAnimeMovie() {
     console.log('Fetching movie...');
 
-    const isMovie = Math.random() > 0.5;
+    // Randomly decide whether to fetch a movie or TV show (50/50 chance)
+    const isMovie = Math.random() > 0.5; // 50% chance for movie, 50% for TV show
     const endpoint = isMovie ? 'movie' : 'tv';
-    const genreFilter = isMovie ? '16,12' : '16';
+    const genreFilter = isMovie ? '16,12' : '16'; // Anime + Adventure genres
 
+    // Fetch data from TMDB API for either movies or TV shows
     const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreFilter}&page=${Math.floor(Math.random() * 500) + 1}`;
 
     try {
         const response = await fetch(url);
         const data = await response.json();
 
+        // Filter out results that do not have a poster
         const validResults = data.results.filter(movie => movie.poster_path);
 
         if (validResults.length > 0) {
             const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
             const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
 
+            // Set the movie poster
             document.getElementById('movie-poster').src = posterUrl;
 
+            // Set the movie title and year
             const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
 
+            // Set the rating
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
+
+            // Set the description
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
             // Fetch trailer URL
@@ -202,6 +210,7 @@ async function getRandomAnimeMovie() {
             const videoResponse = await fetch(videoUrl);
             const videoData = await videoResponse.json();
 
+            // Find the trailer URL if available
             const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
             if (trailer) {
                 trailerUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
@@ -211,6 +220,7 @@ async function getRandomAnimeMovie() {
                 document.getElementById('trailer-button').disabled = true; // Disable button if no trailer
             }
 
+            // Set the TMDB URL for the movie/show page
             tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
         } else {
             getRandomAnimeMovie(); // Skip and fetch next movie if no data
