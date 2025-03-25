@@ -263,29 +263,49 @@ function savePoster() {
         });
 }
 
-// Restore data assignment
-document.getElementById('trailer-button').onclick = () => {
-    if (trailerUrl) window.open(trailerUrl, '_blank');
-};
-
-document.getElementById('tmdb-button').onclick = () => {
-    if (tmdbUrl) window.open(tmdbUrl, '_blank');
-};
-
-// Enable/Disable buttons based on available data
-function updateButtonStates() {
+// New button setup
+function updateButtonStates(trailerUrl, tmdbUrl) {
     const trailerButton = document.getElementById('trailer-button');
     const tmdbButton = document.getElementById('tmdb-button');
 
-    trailerButton.disabled = !trailerUrl;
-    tmdbButton.disabled = !tmdbUrl;
+    // Assign URL values and enable buttons if data exists
+    if (trailerUrl) {
+        trailerButton.disabled = false;
+        trailerButton.onclick = () => window.open(trailerUrl, '_blank');
+        trailerButton.style.opacity = '1';
+        trailerButton.style.cursor = 'pointer';
+    } else {
+        trailerButton.disabled = true;
+        trailerButton.style.opacity = '0.4';
+        trailerButton.style.cursor = 'not-allowed';
+    }
 
-    trailerButton.style.opacity = trailerUrl ? '1' : '0.4';
-    tmdbButton.style.opacity = tmdbUrl ? '1' : '0.4';
+    if (tmdbUrl) {
+        tmdbButton.disabled = false;
+        tmdbButton.onclick = () => window.open(tmdbUrl, '_blank');
+        tmdbButton.style.opacity = '1';
+        tmdbButton.style.cursor = 'pointer';
+    } else {
+        tmdbButton.disabled = true;
+        tmdbButton.style.opacity = '0.4';
+        tmdbButton.style.cursor = 'not-allowed';
+    }
 }
 
-// Ensure button state updates when data is loaded
-setTimeout(updateButtonStates, 500);
+// Example of calling the function after fetching movie data
+// Make sure 'trailerUrl' and 'tmdbUrl' are assigned correctly after data fetch
+setTimeout(() => {
+    console.log('Random Movie Data:', randomMovie);
+    const trailerUrl = randomMovie?.videos?.results?.[0]?.key 
+        ? `https://www.youtube.com/watch?v=${randomMovie.videos.results[0].key}` 
+        : null;
+
+    const tmdbUrl = randomMovie?.id 
+        ? `https://www.themoviedb.org/movie/${randomMovie.id}` 
+        : null;
+
+    updateButtonStates(trailerUrl, tmdbUrl);
+}, 500);
 
 // Run this when the page loads
 document.addEventListener('DOMContentLoaded', () => {
