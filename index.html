@@ -48,15 +48,44 @@
             line-height: 1;
             vertical-align: middle;
         }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Movie Poster -->
-        <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" />
+        <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" onclick="getRandomAnimeMovie()" />
         <div class="info-container">
             <div id="movie-title" class="movie-title">Loading...</div>
             <p id="movie-description"></p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <button class="action-button" onclick="getRandomAnimeMovie()">🔄 New Movie</button>
+            <button class="action-button" onclick="alert('Trailer Coming Soon!')">▶️ Trailer</button>
+            <button class="action-button" onclick="alert('Opening TMDB...')">🌐 TMDB</button>
         </div>
     </div>
 
@@ -116,6 +145,7 @@ async function getRandomAnimeMovie() {
     }
 }
 
+// ✅ Restore click handler
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 </script>
 </body>
