@@ -86,19 +86,49 @@
     </style>
 
 <style>
-    #find-trailer:disabled,
-    #tmdb-link:disabled {
-        cursor: not-allowed !important;
+    #button-container {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        opacity: 0.5;
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.6); /* Slight background tint */
+        padding: 10px;
+        border-radius: 15px;
     }
 
-    #find-trailer,
-    #tmdb-link {
-        transition: opacity 0.2s ease-in-out;
+    .icon-button {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: opacity 0.3s ease, transform 0.2s ease;
+        border-radius: 10px;
+    }
+
+    .icon-button:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .icon-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
     }
 </style>
 
 </head>
 <body>
+
+<div id="button-container">
+    <img id="random-button" src="photo-icon.png" alt="Randomize" class="icon-button">
+    <img id="trailer-button" src="trailer-icon.png" alt="Trailer" class="icon-button">
+    <img id="tmdb-button" src="tmdb-icon.png" alt="TMDB" class="icon-button">
+</div>
+
     <div class="container">
         <!-- Movie Poster -->
         <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" />
@@ -283,6 +313,42 @@ setInterval(getRandomMovie, 60000); // Refresh every 60 seconds
 
 
 
+
+
+<script>
+// Handle button logic
+document.getElementById('random-button').onclick = () => {
+    fetchRandomMovie(); // Call the random movie function
+};
+
+// Trailer Button Logic
+const trailerButton = document.getElementById('trailer-button');
+const tmdbButton = document.getElementById('tmdb-button');
+
+trailerButton.style.display = 'inline';
+tmdbButton.style.display = 'inline';
+
+setTimeout(async () => {
+    const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
+    const videoResponse = await fetch(videoUrl);
+    const videoData = await videoResponse.json();
+
+    const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+    if (trailer) {
+        trailerButton.disabled = false;
+        trailerButton.onclick = () => window.open(`https://www.youtube.com/watch?v=${trailer.key}&autoplay=1`, '_blank');
+    } else {
+        trailerButton.disabled = true;
+    }
+
+    if (randomMovie?.id) {
+        tmdbButton.disabled = false;
+        tmdbButton.onclick = () => window.open(`https://www.themoviedb.org/movie/${randomMovie.id}`, '_blank');
+    } else {
+        tmdbButton.disabled = true;
+    }
+}, 500);
+</script>
 
 </body>
 </html>
