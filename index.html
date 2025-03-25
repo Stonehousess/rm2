@@ -152,7 +152,7 @@
         <button class="action-button" onclick="savePoster()">
             <img src="./assets/images/photo-icon.png" alt="Save">
         </button>
-        <button class="action-button" id="trailer-button" disabled>
+        <button class="action-button" id="trailer-button">
             <img src="./assets/images/trailer-icon.png" alt="Trailer">
         </button>
         <button class="action-button" id="tmdb-button">
@@ -218,10 +218,10 @@ async function getRandomAnimeMovie() {
             const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
             if (trailer) {
                 trailerUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
-                document.getElementById('trailer-button').disabled = false; // Enable button
+                document.getElementById('trailer-button').style.opacity = 1; // Restore opacity
             } else {
                 trailerUrl = null;
-                document.getElementById('trailer-button').disabled = true; // Disable button if no trailer
+                document.getElementById('trailer-button').style.opacity = 0.4; // Reduced opacity
             }
 
             tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
