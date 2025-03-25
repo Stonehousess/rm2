@@ -94,7 +94,7 @@
             display: flex;
             gap: 20px;
             z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.03);
+            background-color: rgba(0, 0, 0, 0.03); /* Transparent overlay */
             padding: 10px 20px;
             border-radius: 12px;
             backdrop-filter: blur(10px);
@@ -123,7 +123,6 @@
             border-radius: 5px;
         }
 
-        /* Disable button if there's no trailer */
         .action-button:disabled {
             opacity: 0.4;
             cursor: not-allowed;
@@ -142,7 +141,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Clicking the Poster Will Trigger a New Movie -->
         <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" onclick="getRandomAnimeMovie()" />
         
         <div class="info-container">
@@ -202,8 +200,19 @@ async function getRandomAnimeMovie() {
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
-            trailerUrl = randomMovie.id ? `https://www.youtube.com/watch?v=${randomMovie.id}` : null;
-            document.getElementById('trailer-button').disabled = !trailerUrl;
+            // Fetch trailer URL
+            const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
+            const videoResponse = await fetch(videoUrl);
+            const videoData = await videoResponse.json();
+
+            const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+            if (trailer) {
+                trailerUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
+                document.getElementById('trailer-button').disabled = false; // Enable button
+            } else {
+                trailerUrl = null;
+                document.getElementById('trailer-button').disabled = true; // Disable button if no trailer
+            }
 
             tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
         }
