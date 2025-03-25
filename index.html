@@ -92,18 +92,17 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 30px;
+            gap: 20px;
             z-index: 9999;
             background-color: rgba(0, 0, 0, 0.03); /* Transparent overlay */
-            padding: 15px 30px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px 15px;
+            border-radius: 6px;
+            backdrop-filter: opacity(50%);
             pointer-events: auto;
         }
 
         .action-button {
-            padding: 20px;
+            padding: 10px;
             background-color: transparent;
             border: none;
             cursor: pointer;
@@ -112,18 +111,18 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            width: 100px; /* Buttons 2x size */
-            height: 100px;
+            width: 120px; /* Buttons 2x size */
+            height: 120px;
         }
 
         .action-button img {
-            width: 60px; /* Adjusted icon size */
-            height: 60px;
+            width: 80px; /* Adjusted icon size */
+            height: 80px;
             object-fit: contain;
         }
 
         .action-button:disabled {
-            opacity: 0.4;
+            opacity: 0.2;
             cursor: not-allowed;
         }
 
