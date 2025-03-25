@@ -98,17 +98,16 @@
             display: flex;
             gap: 20px;
             z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.02); /* ✅ Nearly Invisible */
-            padding: 5px;
+            background-color: rgba(0, 0, 0, 0.03); /* ✅ Even more see-through */
+            padding: 10px 20px;
             border-radius: 12px;
             backdrop-filter: blur(10px);
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05); /* ✅ Softer shadow */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* ✅ Softer shadow */
             pointer-events: auto;
-            height: 60px;
         }
 
         .action-button {
-            padding: 5px;
+            padding: 10px;
             background-color: transparent;
             border: none;
             cursor: pointer;
@@ -117,14 +116,14 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            width: 80px; /* ✅ Twice as big */
+            width: 80px; /* ✅ Double the size */
             height: 80px;
         }
 
         .action-button img {
-            width: 40px; /* ✅ Reduced icon size for consistency */
+            width: 40px; /* ✅ Icon size */
             height: 40px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 5px;
         }
 
@@ -164,13 +163,13 @@
 
     <div class="button-container">
         <button class="action-button" onclick="savePoster()">
-            <img src="./photo-icon.png" alt="Save">
+            <img src="./assets/photo-icon.png" alt="Save">
         </button>
-        <button class="action-button" id="trailer-button">
-            <img src="./trailer-icon.png" alt="Trailer">
+        <button class="action-button" id="trailer-button" disabled>
+            <img src="./assets/trailer-icon.png" alt="Trailer">
         </button>
         <button class="action-button" id="tmdb-button">
-            <img src="./tmdb-icon.png" alt="TMDB">
+            <img src="./assets/tmdb-icon.png" alt="TMDB">
         </button>
     </div>
 
@@ -218,15 +217,20 @@ async function getRandomAnimeMovie() {
 }
 
 function savePoster() {
-    fetch(document.getElementById('movie-poster').src)
-        .then(res => res.blob())
-        .then(blob => {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'movie-poster.jpg';
-            link.click();
-        });
+    const posterUrl = document.getElementById('movie-poster').src;
+    const link = document.createElement('a');
+    link.href = posterUrl;
+    link.download = 'movie-poster.jpg';
+    link.click();
 }
+
+document.getElementById('trailer-button').onclick = () => {
+    if (trailerUrl) window.open(trailerUrl, '_blank');
+};
+
+document.getElementById('tmdb-button').onclick = () => {
+    if (tmdbUrl) window.open(tmdbUrl, '_blank');
+};
 
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 </script>
