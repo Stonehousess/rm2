@@ -40,6 +40,11 @@
             transition: transform 0.3s ease;
         }
 
+        /* ✅ Restore Zoom on Hover */
+        .movie-poster:hover {
+            transform: scale(1.05);
+        }
+
         .movie-title {
             font-size: 20px;
             color: #fff;
@@ -57,40 +62,54 @@
         }
 
         .action-button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
+            padding: 10px;
+            background-color: transparent;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            transition: opacity 0.3s ease;
+        }
+
+        .action-button img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 5px;
         }
 
         .action-button:hover {
-            background-color: #555;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Movie Poster -->
+        <!-- ✅ Clicking the Poster Will Still Trigger a New Movie -->
         <img id="movie-poster" class="movie-poster" src="" alt="Movie Poster" onclick="getRandomAnimeMovie()" />
+        
         <div class="info-container">
             <div id="movie-title" class="movie-title">Loading...</div>
+            <div id="movie-rating" class="movie-title"></div>
             <p id="movie-description"></p>
         </div>
 
-        <!-- Buttons -->
+        <!-- ✅ Restored Original Buttons -->
         <div class="button-container">
-            <button class="action-button" onclick="getRandomAnimeMovie()">🔄 New Movie</button>
-            <button class="action-button" onclick="alert('Trailer Coming Soon!')">▶️ Trailer</button>
-            <button class="action-button" onclick="alert('Opening TMDB...')">🌐 TMDB</button>
+            <button class="action-button" onclick="savePoster()">
+                <img src="photo-icon.png" alt="Save Picture" />
+            </button>
+            <button class="action-button" id="trailer-button">
+                <img src="trailer-icon.png" alt="Watch Trailer" />
+            </button>
+            <button class="action-button" id="tmdb-button">
+                <img src="tmdb-icon.png" alt="Open TMDB" />
+            </button>
         </div>
     </div>
 
 <script>
 const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
+let trailerUrl = '';
+let tmdbUrl = '';
 
 async function getRandomAnimeMovie() {
     console.log('Fetching movie...');
@@ -99,14 +118,7 @@ async function getRandomAnimeMovie() {
     const endpoint = isMovie ? 'movie' : 'tv';
     const genreFilter = isMovie ? '16,12' : '16';
 
-    const initialUrl = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&with_genres=${genreFilter}&sort_by=popularity.desc`;
-    const initialResponse = await fetch(initialUrl);
-    const initialData = await initialResponse.json();
-
-    const totalPages = Math.min(initialData.total_pages, 500);
-    const randomPage = Math.floor(Math.random() * totalPages) + 1;
-
-    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreFilter}&page=${randomPage}`;
+    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreFilter}&page=${Math.floor(Math.random() * 500) + 1}`;
 
     try {
         const response = await fetch(url);
@@ -118,34 +130,48 @@ async function getRandomAnimeMovie() {
             const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
             const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
 
-            console.log('Random movie:', randomMovie);
-
             const detailsUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}?api_key=${API_KEY}`;
             const detailsResponse = await fetch(detailsUrl);
             const details = await detailsResponse.json();
 
-            const runtime = details.runtime || details.episode_run_time?.[0] || 'N/A';
-            const countries = details.production_countries || [];
-            const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
+            trailerUrl = details.videos?.results?.find(v => v.type === 'Trailer')?.key
+                ? `https://www.youtube.com/watch?v=${details.videos.results.find(v => v.type === 'Trailer').key}`
+                : '';
+
+            tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
 
             // ✅ Set movie poster + meta tag
             document.getElementById('movie-poster').src = posterUrl;
-            document.getElementById('poster-url').content = posterUrl; // NEW LINE
+            document.getElementById('poster-url').content = posterUrl;
+            document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name} (${randomMovie.release_date?.split('-')[0] || 'N/A'})`;
+            document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
 
-            // ✅ Set movie title and description
-            document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name}  (${randomMovie.release_date ? randomMovie.release_date.split('-')[0] : 'N/A'})`;
             document.getElementById('movie-description').innerText = details.overview || 'No description available';
-        } else {
-            console.log('No valid results - trying again...');
-            getRandomAnimeMovie();
         }
     } catch (error) {
         console.error('Error fetching movie:', error);
-        document.getElementById('movie-title').textContent = 'Failed to load movie.';
     }
 }
 
-// ✅ Restore click handler
+function savePoster() {
+    const posterUrl = document.getElementById('poster-url').content;
+    if (posterUrl) {
+        window.open(posterUrl, '_blank');
+    }
+}
+
+document.getElementById('trailer-button').onclick = () => {
+    if (trailerUrl) {
+        window.open(trailerUrl, '_blank');
+    }
+};
+
+document.getElementById('tmdb-button').onclick = () => {
+    if (tmdbUrl) {
+        window.open(tmdbUrl, '_blank');
+    }
+};
+
 document.addEventListener('DOMContentLoaded', getRandomAnimeMovie);
 </script>
 </body>
