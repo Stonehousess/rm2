@@ -55,35 +55,39 @@
         .movie-title {
             font-size: 20px;
             color: #fff;
-            flex-grow: 1;
             text-align: center;
-            line-height: 1;
-            vertical-align: middle;
             margin-bottom: 5px;
+        }
+
+        /* ✅ Align Rating and Flag */
+        .rating-flag-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* ✅ Add space between flag and rating */
+            margin-top: 5px;
         }
 
         .movie-rating {
             font-size: 18px;
             color: #ccc;
-            margin-top: 5px;
-            margin-bottom: 5px;
+            margin: 0;
         }
 
         .movie-flag {
-            font-size: 30px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin: 0;
         }
 
-        /* ✅ Align Rating, Flag, and Buttons in One Row */
-        .controls-container {
+        /* ✅ Fix Button Visibility */
+        .button-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 20px; /* ✅ Add space between elements */
             margin-top: 15px;
-            z-index: 10;
+            gap: 15px;
+            z-index: 9999;
             position: relative;
-            pointer-events: auto; /* ✅ Ensure buttons are clickable */
+            pointer-events: auto;
         }
 
         .action-button {
@@ -115,22 +119,24 @@
             <!-- ✅ Show Title and Rating -->
             <div id="movie-title" class="movie-title">Loading...</div>
 
-            <!-- ✅ Align Rating, Flag, and Buttons on Same Line -->
-            <div class="controls-container">
+            <!-- ✅ Align Rating and Flag -->
+            <div class="rating-flag-container">
                 <div id="movie-rating" class="movie-rating"></div>
                 <div id="movie-flag" class="movie-flag"></div>
-
-                <!-- ✅ Restore Original Buttons -->
-                <button class="action-button" onclick="savePoster()">
-                    <img src="photo-icon.png" alt="Save Picture" />
-                </button>
-                <button class="action-button" id="trailer-button">
-                    <img src="trailer-icon.png" alt="Watch Trailer" />
-                </button>
-                <button class="action-button" id="tmdb-button">
-                    <img src="tmdb-icon.png" alt="Open TMDB" />
-                </button>
             </div>
+        </div>
+
+        <!-- ✅ Restore Original Buttons -->
+        <div class="button-container">
+            <button class="action-button" onclick="savePoster()">
+                <img src="photo-icon.png" alt="Save Picture" />
+            </button>
+            <button class="action-button" id="trailer-button">
+                <img src="trailer-icon.png" alt="Watch Trailer" />
+            </button>
+            <button class="action-button" id="tmdb-button">
+                <img src="tmdb-icon.png" alt="Open TMDB" />
+            </button>
         </div>
     </div>
 
@@ -158,12 +164,6 @@ async function getRandomAnimeMovie() {
             const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
             const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
 
-            if (!posterUrl) {
-                console.log('Invalid suggestion — trying again...');
-                getRandomAnimeMovie();
-                return;
-            }
-
             const detailsUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}?api_key=${API_KEY}`;
             const detailsResponse = await fetch(detailsUrl);
             const details = await detailsResponse.json();
@@ -178,20 +178,19 @@ async function getRandomAnimeMovie() {
             document.getElementById('movie-poster').src = posterUrl;
             document.getElementById('poster-url').content = posterUrl;
 
-            // ✅ Title, Year, Rating
-            document.getElementById('movie-title').innerHTML = `${randomMovie.title || randomMovie.name} (${randomMovie.release_date?.split('-')[0] || 'N/A'})`;
+            // ✅ Title and Rating (Suppress Empty Year)
+            const year = randomMovie.release_date?.split('-')[0];
+            document.getElementById('movie-title').innerHTML =
+                `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
+
+            // ✅ Rating
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
 
             // ✅ Country Flag
             const countryCode = details.production_countries?.[0]?.iso_3166_1;
-            if (countryCode) {
-                const flag = countryCode
-                    .toUpperCase()
-                    .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
-                document.getElementById('movie-flag').innerText = flag;
-            } else {
-                document.getElementById('movie-flag').innerText = '';
-            }
+            document.getElementById('movie-flag').innerText = countryCode
+                ? countryCode.replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()))
+                : '';
         }
     } catch (error) {
         console.error('Error fetching movie:', error);
