@@ -75,9 +75,12 @@
             justify-content: center;
             margin-top: 20px;
             gap: 15px;
-            z-index: 10; /* ✅ Higher Z-Index */
-            position: relative;
-            pointer-events: auto; /* ✅ Ensure buttons are clickable */
+            z-index: 9999; /* ✅ Highest Z-Index */
+            position: fixed; /* ✅ Ensure buttons stay on top */
+            top: 80%; /* ✅ Adjust positioning */
+            left: 50%; /* ✅ Center buttons horizontally */
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
         }
 
         .action-button {
@@ -148,6 +151,12 @@ async function getRandomAnimeMovie() {
         if (validResults.length > 0) {
             const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
             const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
+
+            if (!posterUrl) {
+                console.log('Invalid suggestion — trying again...');
+                getRandomAnimeMovie();
+                return;
+            }
 
             const detailsUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}?api_key=${API_KEY}`;
             const detailsResponse = await fetch(detailsUrl);
