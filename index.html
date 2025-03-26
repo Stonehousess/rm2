@@ -191,6 +191,7 @@ async function getRandomAnimeMovie() {
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
+            document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
             document.getElementById('movie-flag').innerText = `randomMovie.flag`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
