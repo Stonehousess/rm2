@@ -196,11 +196,11 @@ async function getRandomAnimeMovie() {
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
             // Country flag if available
-        if (countryCode) {
-            document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
-            document.getElementById('movie-flag').style.display = 'inline';
-        } else {
-            document.getElementById('movie-flag').style.display = 'none';
+       // if (countryCode) {
+         //   document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
+           // document.getElementById('movie-flag').style.display = 'inline';
+      //  } else {
+           // document.getElementById('movie-flag').style.display = 'none';
         }
 
             // Fetch trailer URL
