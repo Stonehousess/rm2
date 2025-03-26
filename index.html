@@ -191,7 +191,7 @@ async function getRandomAnimeMovie() {
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
-            document.getElementById('movie-flag').style.display = 'inline';
+            document.getElementById('movie-flag').innerText = `randomMovie.flag`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
             // Fetch trailer URL
