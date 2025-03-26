@@ -189,8 +189,8 @@ async function getRandomAnimeMovie() {
             const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
-            const countries = details.production_countries || [];
-            const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
+            //const countries = details.production_countries || [];
+            //const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
