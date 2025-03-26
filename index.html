@@ -189,11 +189,19 @@ async function getRandomAnimeMovie() {
             const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
+            const countries = details.production_countries || [];
+            const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
-            document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
-            document.getElementById('movie-flag').innerText = `randomMovie.flag`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
+
+            // Country flag if available
+        if (countryCode) {
+            document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
+            document.getElementById('movie-flag').style.display = 'inline';
+        } else {
+            document.getElementById('movie-flag').style.display = 'none';
+        }
 
             // Fetch trailer URL
             const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
