@@ -4,7 +4,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>══✨🎲VCR🎭🌙══</title>
+    <title>VCR🎭🌙</title>
     
     <!-- Meta tag for poster extraction -->
     <meta id="poster-url" content="">
@@ -113,11 +113,13 @@
             z-index: 9999;
             width: 120px; /* Buttons 2x size */
             height: 120px;
+            opacity: 0.9;
         }
 
         .action-button img {
             width: 80px; /* Adjusted icon size */
             height: 80px;
+            opacity: 0.9;
             object-fit: contain;
         }
 
@@ -189,13 +191,13 @@ async function getRandomAnimeMovie() {
             const year = randomMovie.release_date?.split('-')[0];
             document.getElementById('movie-title').innerHTML =
                 `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
-            //const countries = details.production_countries || [];
-            //const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
 
             document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
             document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
 
             // Country flag if available
+            //const countries = details.production_countries || [];
+            //const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
        // if (countryCode) {
          //   document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
            // document.getElementById('movie-flag').style.display = 'inline';
