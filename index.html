@@ -1,264 +1,530 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VCR🎭🌙</title>
-    
-    <!-- Meta tag for poster extraction -->
-    <meta id="poster-url" content="">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>📼VCR📼🎭</title>
+  <style>
+    html, body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+    }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+    #movie-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        .container {
-            text-align: center;
-            width: 100vw;
-            max-width: 800px;
-            position: relative;
-            padding-bottom: 20px;
-        }
+    #movie-poster {
+      height: 100vh;
+      width: auto;
+      max-height: 100vh;
+      display: block;
+      margin: 0 12px;
+      border-left: 1px outset red;
+      border-right: 1px outset red;
+      animation: glowing-border 5s infinite ease-in-out;
+      background: #222;
+      user-select: none;
+    }
+    #poster-wrapper {
+      position: relative;
+      display: inline-block;
+      width: auto;
+}
 
-        .movie-poster {
-            width: fit-content;
-            height: 100vh;
-            object-fit: cover;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-            z-index: 0;
-        }
+ .floating-buttons {
+  position: absolute;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0;
+  Max-width: 100%;
+  box-sizing: border-box;
+  transition: opacity 1s ease;
+  z-index: 1000;
+}
 
-        .movie-poster:hover {
-            transform: scale(1.05);
-        }
+.floating-buttons.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
-        .info-container {
-            position: relative;
-            z-index: 1;
-            margin-top: 10px;
-        }
+.floating-buttons button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 4px;
+  cursor: pointer;
+  flex: 1;
+  Max-width: 160px;
+}
 
-        .movie-title {
-            font-size: 20px;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 5px;
-        }
+.floating-buttons button img {
+  width: 100%;
+  height: auto;
+  opacity: 0.4;
+  filter: drop-shadow(0 0 1px #00ccff);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
 
-        .rating-flag-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
+.floating-buttons button:hover img {
+  transform: scale(1.03);
+  opacity: 0.7;
+}
 
-        .movie-rating {
-            font-size: 18px;
-            color: #ccc;
-            margin: 0;
-        }
+    #loading-spinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #111;
+      color: #ffcc00;
+      padding: 20px 40px;
+      font-size: 20px;
+      border: 2px solid #ffcc00;
+      border-radius: 10px;
+      z-index: 2000;
+      display: none;
+    }
 
-        .movie-flag {
-            font-size: 24px;
-            margin: 0;
-        }
+    @keyframes glowing-border {
+      0% { box-shadow: 0 0 10px 2px red; border-color: red; }
+      25% { box-shadow: 0 0 20px 4px orange; border-color: orange; }
+      50% { box-shadow: 0 0 25px 6px yellow; border-color: yellow; }
+      75% { box-shadow: 0 0 20px 4px orange; border-color: orange; }
+      100% { box-shadow: 0 0 10px 2px red; border-color: red; }
+    }
 
-        .movie-description {
-            color: #bbb;
-            font-size: 16px;
-            text-align: center;
-            padding: 0 20px;
-            margin-top: 10px;
-            line-height: 1.5;
-        }
+    #info-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: rgba(20, 20, 20, 0.9);
+      color: white;
+      padding: 10px 20px;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      transition: height 0.4s ease, opacity 1s ease;
+      z-index: 1500;
+      opacity: 0.5;
+      overflow: hidden;
+      cursor: pointer;
+    }
 
-        .button-container {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.03); /* Transparent overlay */
-            padding: 15px 15px;
-            border-radius: 6px;
-            backdrop-filter: opacity(50%);
-            pointer-events: auto;
-        }
+    #info-panel.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-        .action-button {
-            padding: 10px;
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            width: 120px; /* Buttons 2x size */
-            height: 120px;
-            opacity: 0.9;
-        }
+    #info-panel.expanded {
+      height: auto;
+      opacity: 0.9;
+    }
 
-        .action-button img {
-            width: 80px; /* Adjusted icon size */
-            height: 80px;
-            opacity: 0.9;
-            object-fit: contain;
-        }
+    #info-content {
+      pointer-events: auto;
+      opacity: 0.1;
+      transition: opacity 0.4s ease 0.3s;
+    }
 
-        .action-button:disabled {
-            opacity: 0.2;
-            cursor: not-allowed;
-        }
+    #info-panel.expanded #info-content {
+      opacity: 0.65;
+    }
 
-        .action-button:hover {
-            opacity: 0.8;
-        }
+    #info-title {
+      font-size: 27px;
+      font-weight: bold;
+    }
 
-    </style>
+    #info-meta {
+      font-size: 19px;
+      margin-top: 5px;
+      color: #ffcc00;
+    }
+
+    #info-description {
+      margin-top: 6px;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    #info-genre {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #aaa;
+    }
+#trailer-overlay {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#trailer-overlay.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+}
+
+  .player-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+  #player {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+}
+.close-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <img id="movie-poster" class="movie-poster" src="" alt="Film Poster" onclick="getRandomAnimeMovie()" />
-        
-        <div class="info-container">
-            <div id="movie-title" class="movie-title">Loading...</div>
+  <div id="movie-container">
+  <div id="poster-wrapper">
+    <img alt="" draggable="false" id="movie-poster" src="https://via.placeholder.com/500x750?text=Loading..."/>
+    <div class="floating-buttons">
+    <button id="tmdb-button"><img src="tmdb.png" alt="TMDB"/></button>
+    <button id="save-button"><img src="record.png" alt="Record"/></button>
+    <button id="trailer-button" disabled><img src="play.png" alt="Play"/></button>
+    <button id="next-button"><img src="next.png" alt="Next"/></button>
+    <button id="genre-button"><img src="shuffle.png" alt="Shuffle"/></button>
+  </div>
+    <div id="movie-type"></div>
+    <div id="movie-runtime"></div>
+  </div>
 
-            <div class="rating-flag-container">
-                <div id="movie-rating" class="movie-rating"></div>
-                <div id="movie-flag" class="movie-flag"></div>
-            </div>
-
-            <div id="movie-description" class="movie-description"></div>
-        </div>
+  <div id="info-panel" onclick="togglePanel()">
+    <div id="info-content">
+      <div id="info-title">Loading...</div>
+      <div id="info-meta">⭐️ -- • 🎬/📺 • -- mins <span id="flag"></span></div>
+      <div id="info-description">Loading description...</div>
+      <div id="info-genre">Genre: <span id="genre-name">Loading...</span> <span id="tmdb-link"></span></div>
     </div>
+  </div>
 
-    <div class="button-container">
-        <button class="action-button" onclick="savePoster()">
-            <img src="./assets/images/photo-icon.png" alt="Save">
-        </button>
-        <button class="action-button" id="trailer-button" disabled>
-            <img src="./assets/images/trailer-icon.png" alt="Trailer">
-        </button>
-        <button class="action-button" id="tmdb-button">
-            <img src="./assets/images/tmdb-icon.png" alt="TMDB">
-        </button>
-    </div>
+  <div id="trailer-overlay">
+  <div class="player-wrapper">
+    <div id="player"></div>
+  </div>
+  <button onclick="closeTrailer()" class="close-button">Close</button>
+</div>
+<script src="https://www.youtube.com/iframe_api"></script>
+  
 
 <script>
-const API_KEY = 'e8d804d1f104509d3c1c5b1166485ae6';
-let trailerUrl = '';
-let tmdbUrl = '';
+  let genres = [
+    { name: "Sci-Fi", movie: "878", tv: "10765" },
+    { name: "Adventure", movie: "12", tv: "10759" },
+    { name: "Comedy", movie: "35", tv: "35" },
+    { name: "Documentary", movie: "99", tv: "99" },
+    { name: "Animation", movie: "16", tv: "16" },
+    { name: "Romance", movie: "10749", tv: "18" },
+    { name: "Crime", movie: "80", tv: "80" },
+    { name: "Mystery", movie: "9648", tv: "9648" }
+  ];
 
-async function getRandomAnimeMovie() {
-    console.log('Fetching movie...');
+  let isMovie;
+  let currentGenre = genres.find(g => g.name === "Animation") || genres[0];
+  let currentTMDBUrl = "", currentTrailerUrl = "";
+  let panelTimer, panelFadeTimer;
+  let trailerPlayer = null;
+  let trailerPlaying = false;
+  let autoTrailerMode = false;
+  let longPressTimer;
+  let fetchTimer = null; // 🔁 Track the fetch loop
+  let trailerLoopFirst = true;
 
-    const isMovie = Math.random() > 0.5;
-    const endpoint = isMovie ? 'movie' : 'tv';
-    const genreFilter = isMovie ? '16,12' : '16';
+  function togglePanel(forceExpand = null) {
+    const panel = document.getElementById('info-panel');
+    const shouldExpand = forceExpand !== null ? forceExpand : !panel.classList.contains('expanded');
+    panel.classList.remove('hidden');
+    if (shouldExpand) {
+      panel.classList.add('expanded');
+      clearTimeout(panelTimer);
+      panelTimer = setTimeout(() => panel.classList.remove('expanded'), 6000);
+    } else {
+      panel.classList.remove('expanded');
+    }
+    resetPanelFade();
+  }
 
-    const url = `https://api.themoviedb.org/3/discover/${endpoint}?api_key=${API_KEY}&sort_by=popularity.desc&with_genres=${genreFilter}&page=${Math.floor(Math.random() * 500) + 1}`;
+  function resetPanelFade() {
+    const panel = document.getElementById('info-panel');
+    panel.classList.remove("hidden");
+    clearTimeout(panelFadeTimer);
+    panelFadeTimer = setTimeout(() => {
+      if (!panel.classList.contains("expanded")) panel.classList.add("hidden");
+    }, 10000);
+  }
+
+  function getFlagEmoji(countryCode) {
+    if (!countryCode) return "";
+    return countryCode
+      .toUpperCase()
+      .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt()));
+  }
+function onYouTubeIframeAPIReady() {
+  trailerPlayer = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: '',
+    playerVars: { autoplay: 1 },
+    events: {
+      onStateChange: onPlayerStateChange
+    }
+  });
+}
+
+let failSafeTimeout; // Define globally near trailerPlayer
+
+function playTrailer(url) {
+  const videoId = extractYouTubeId(url);
+  if (!videoId || !trailerPlayer) return;
+
+  trailerPlaying = true;
+  document.getElementById('trailer-overlay').classList.add('active');
+  trailerPlayer.loadVideoById(videoId);
+  clearTimeout(fadeTimer);
+
+ failSafeTimeout = setTimeout(() => {
+  if (trailerPlayer && typeof trailerPlayer.getPlayerState === "function") {
+    const state = trailerPlayer.getPlayerState();
+    if (state !== YT.PlayerState.PLAYING && autoTrailerMode) {
+      console.warn("Trailer failed to play — skipping...");
+      findTrailerAndPlay();
+    }
+  }
+}, 6000);
+}
+function closeTrailer() {
+  trailerPlaying = false;
+  autoTrailerMode = false;
+  trailerLoopFirst = true
+  trailerPlayer.stopVideo();
+  document.getElementById('trailer-overlay').classList.remove('active');
+  fetchTimer = setTimeout(startAutoFetch, 30000);
+}
+
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.PLAYING) {
+    clearTimeout(failSafeTimeout);
+  }
+
+  if (event.data === YT.PlayerState.ENDED) {
+    trailerPlaying = false;
+    if (autoTrailerMode) {
+      findTrailerAndPlay();
+    } else {
+      document.getElementById('trailer-overlay').classList.remove('active');
+    }
+  }
+}
+function extractYouTubeId(url) {
+  const match = url.match(/v=([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : null;
+}
+  async function getRandomTitle(requireTrailer = false) {
+    isMovie = Math.random() < 0.5;
+    const genreId = isMovie ? currentGenre.movie : currentGenre.tv;
+    const type = isMovie ? "movie" : "tv";
+    const randomPage = Math.floor(Math.random() * 70) + 1;
+    const url = `https://api.themoviedb.org/3/discover/${type}?api_key=e8d804d1f104509d3c1c5b1166485ae6&language=en-US&sort_by=popularity.desc&with_genres=${genreId}&page=${randomPage}`;
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+      const res = await fetch(url);
+      const data = await res.json();
+      const results = data.results;
+      if (!results || results.length === 0) return false;
 
-        const validResults = data.results.filter(movie => movie.poster_path);
+      const item = results[Math.floor(Math.random() * results.length)];
+if (!item.poster_path) {
+  console.warn("Missing poster — retrying...");
+  return getRandomTitle(requireTrailer); // Retry if no poster
+}
 
-        if (validResults.length > 0) {
-            const randomMovie = validResults[Math.floor(Math.random() * validResults.length)];
-            const posterUrl = `https://image.tmdb.org/t/p/original${randomMovie.poster_path}`;
+      const posterPath = item.poster_path ? `https://image.tmdb.org/t/p/original${item.poster_path}` : "https://via.placeholder.com/500x750?text=No+Image";
+      const title = item.title || item.name || "Untitled";
+      const overview = item.overview || "No description available.";
+      const rating = item.vote_average ? `${Math.round(item.vote_average * 10)}%` : "--";
+      const releaseDate = item.release_date || item.first_air_date || "";
+      const year = releaseDate ? ` (${releaseDate.substring(0, 4)})` : "";
 
-            document.getElementById('movie-poster').src = posterUrl;
+      const detailUrl = `https://api.themoviedb.org/3/${type}/${item.id}?api_key=e8d804d1f104509d3c1c5b1166485ae6&language=en-US`;
+      const detailRes = await fetch(detailUrl);
+      const detailData = await detailRes.json();
 
-            const year = randomMovie.release_date?.split('-')[0];
-            document.getElementById('movie-title').innerHTML =
-                `${randomMovie.title || randomMovie.name}${year ? ` (${year})` : ''}`;
+      const runtime = detailData.runtime || detailData.episode_run_time?.[0] || "--";
+      const episodeCount = detailData.number_of_episodes || "--";
+      const originCountry = detailData.origin_country?.[0] || detailData.production_countries?.[0]?.iso_3166_1 || "";
+      const metaText = isMovie
+        ? `⭐️ ${rating} • 🎬 • ${runtime} mins • ${getFlagEmoji(originCountry)}`
+        : `⭐️ ${rating} • 📺 • ${episodeCount} eps × ${runtime} mins • ${getFlagEmoji(originCountry)}`;
 
-            document.getElementById('movie-rating').innerText = `⭐ ${randomMovie.vote_average.toFixed(1)}`;
-            document.getElementById('movie-description').innerText = randomMovie.overview || 'No description available';
+      document.getElementById("movie-poster").src = posterPath;
+      document.getElementById("info-title").textContent = title + year;
+      document.getElementById("info-meta").innerHTML = metaText;
+      document.getElementById("info-description").textContent = overview;
+      document.getElementById("genre-name").textContent = currentGenre.name;
 
-            // Country flag if available
-            //const countries = details.production_countries || [];
-            //const countryCode = countries.length > 0 ? countries[0].iso_3166_1 : null;
-       // if (countryCode) {
-         //   document.getElementById('movie-flag').src = `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
-           // document.getElementById('movie-flag').style.display = 'inline';
-      //  } else {
-           // document.getElementById('movie-flag').style.display = 'none';
-      //  }
+      currentTMDBUrl = `https://www.themoviedb.org/${type}/${item.id}`;
+      document.getElementById("tmdb-link").innerHTML = `| <a href="${currentTMDBUrl}" target="_blank" style="color:#00ccff;">TMDB</a>`;
 
-            // Fetch trailer URL
-            const videoUrl = `https://api.themoviedb.org/3/${endpoint}/${randomMovie.id}/videos?api_key=${API_KEY}`;
-            const videoResponse = await fetch(videoUrl);
-            const videoData = await videoResponse.json();
-
-            const trailer = videoData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-            if (trailer) {
-                trailerUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
-                document.getElementById('trailer-button').disabled = false; // Enable button
-            } else {
-                trailerUrl = null;
-                document.getElementById('trailer-button').disabled = true; // Disable button if no trailer
-            }
-
-            tmdbUrl = `https://www.themoviedb.org/${endpoint}/${randomMovie.id}`;
-        } else {
-            getRandomAnimeMovie(); // Skip and fetch next movie if no data
-        }
-    } catch (error) {
-        console.error('Error fetching movie:', error);
+      const trailerRes = await fetch(`https://api.themoviedb.org/3/${type}/${item.id}/videos?api_key=e8d804d1f104509d3c1c5b1166485ae6&language=en-US`);
+      const trailerData = await trailerRes.json();
+      const trailers = trailerData.results.filter(v => v.site === "YouTube" && v.type === "Trailer");
+      currentTrailerUrl = trailers.length > 0 ? `https://www.youtube.com/watch?v=${trailers[0].key}` : "";
+if (requireTrailer && !currentTrailerUrl) {
+  console.warn("No trailer — retrying...");
+  return false;
+}
+      document.getElementById("trailer-button").disabled = !currentTrailerUrl;
+      return true; 
+    } catch (err) {
+      console.error("Failed to fetch from TMDB:", err);
+      return false;
     }
-}
+  }
+async function findTrailerAndPlay() {
+  // If we’re just starting trailer mode
+  if (trailerLoopFirst) {
+    trailerLoopFirst = false;
 
-function savePoster() {
+    if (currentTrailerUrl) {
+      console.log("▶️ Playing trailer for current title");
+      playTrailer(currentTrailerUrl);
+      return;
+    }
+
+    console.log("⏭ No trailer on current title — starting search loop...");
+  }
+
+  // Keep looking for titles with a trailer
+  let found = false;
+  while (!found) {
+    found = await getRandomTitle(true);
+    if (!found) {
+      console.warn("🔁 Still searching for a trailer...");
+    }
+  }
+
+  console.log("🎬 Found trailer — playing");
+  playTrailer(currentTrailerUrl);
+}
+  document.addEventListener("wheel", e => {
+    const panel = document.getElementById('info-panel');
+    if (e.deltaY > 0) panel.classList.add("expanded");
+    else if (e.deltaY < 0) panel.classList.remove("expanded");
+    resetPanelFade();
+  });
+
+  document.getElementById("tmdb-button").onclick = () => togglePanel(true);
+  document.getElementById("save-button").onclick = () => {
     const posterUrl = document.getElementById('movie-poster').src;
-    fetch(posterUrl)
-        .then(response => response.blob())
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'movie-poster.jpg'; // Automatically download the image
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        });
+    fetch(posterUrl).then(r => r.blob()).then(blob => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'vcr.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  document.getElementById("genre-button").onclick = () => {
+    currentGenre = genres[Math.floor(Math.random() * genres.length)];
+    getRandomTitle();
+  };
+
+  document.getElementById("next-button").onclick = getRandomTitle;
+const trailerBtn = document.getElementById("trailer-button");
+
+trailerBtn.addEventListener("mousedown", () => {
+  longPressTimer = setTimeout(() => {
+    if (fetchTimer) clearTimeout(fetchTimer);
+    autoTrailerMode = true;
+    trailerLoopFirst = true;
+    findTrailerAndPlay(); // start autoplay mode
+  }, 600); // long press threshold
+});
+
+trailerBtn.addEventListener("mouseup", () => clearTimeout(longPressTimer));
+trailerBtn.addEventListener("mouseleave", () => clearTimeout(longPressTimer));
+
+trailerBtn.addEventListener("click", () => {
+  if (!autoTrailerMode && currentTrailerUrl) {
+    window.open(currentTrailerUrl, "_blank");
+  }
+});
+  let fadeTimer;
+  const buttons = document.querySelector(".floating-buttons");
+  function showButtons() {
+    buttons.classList.remove("hidden");
+    document.getElementById("info-panel").classList.remove("hidden");
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(() => {
+      buttons.classList.add("hidden");
+      if (!document.getElementById("info-panel").classList.contains("expanded")) {
+        document.getElementById("info-panel").classList.add("hidden");
+      }
+    }, 5000);
+  }
+  ['mousemove', 'click', 'touchstart'].forEach(event => window.addEventListener(event, showButtons));
+  setTimeout(() => {
+    buttons.classList.add("hidden");
+    document.getElementById("info-panel").classList.add("hidden");
+  }, 5000);
+
+  document.getElementById("movie-poster").onclick = getRandomTitle;
+ function startAutoFetch() {
+  if (fetchTimer) clearTimeout(fetchTimer); // ✅ Clear any previous timer
+
+  getRandomTitle(false).then(() => {
+    fetchTimer = setTimeout(startAutoFetch, 60000); // ✅ Save the new timer
+  });
 }
 
-document.getElementById('trailer-button').onclick = () => {
-    if (trailerUrl) window.open(trailerUrl, '_blank');
+  window.onload = () => {
+  startAutoFetch();
 };
-
-document.getElementById('tmdb-button').onclick = () => {
-    if (tmdbUrl) window.open(tmdbUrl, '_blank');
-};
-
-// Run this when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    getRandomAnimeMovie();
-
-    // Set up the auto-refresh for the movie suggestion every 60 seconds
-    setInterval(getRandomAnimeMovie, 60000); // 60000ms = 60 seconds
-});
 </script>
 </body>
 </html>
